@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Ball Virora — Official Series Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600&display=swap" rel="stylesheet">
+<!-- ============================================================
+  DRAGON BALL VIRORA — SERIES HUB
+
+  ★ HOW TO EDIT (no coding needed):
+    Open the site and add  #editor  to the end of the URL
+    (e.g. yoursite.github.io/index.html#editor), or triple-tap
+    the ✦ glyph in the footer. Creator Mode opens: edit
+    characters, seasons, and episodes with forms, preview live,
+    then press "Download updated site" and replace this file in
+    your GitHub repo. Drafts also auto-save in your browser so a
+    refresh won't lose unsaved work.
+
+  ★ HAND-EDIT OPTION:
+    All data lives in the <script id="db-data"> JSON block below
+    the page markup, if you'd rather edit it directly.
+
+  ★ ART: upload images to a GitHub repo, open one, press "Raw",
+    and paste that URL into a variant's Image field.
+   ============================================================ -->
+<style>
+:root{
+  --void:#07070c;
+  --panel:#111018;
+  --panel-2:#171622;
+  --line:#262433;
+  --ink:#f4eff6;
+  --mute:#9b96aa;
+  --pink:#ff9ed2;        /* Virora's light pink */
+  --pink-soft:#ffc9e4;
+  --rose:#ff6fb5;        /* ki-energy hot edge */
+  --violet:#8f7bff;      /* nebula counterpoint — use sparingly */
+  --ok:#7ee0a8;
+  --radius:14px;
+  --disp:'Unbounded',sans-serif;
+  --body:'Outfit',sans-serif;
+  --label:'Chakra Petch',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);
+  color:var(--ink);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--rose);color:#fff}
+a{color:var(--pink);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ---------- star field ---------- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:.5;animation:twinkle var(--tw,4s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){
+  .star{animation:none}
+  .nebula{animation:none}
+}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:22px;
+  padding:14px clamp(16px,4vw,48px);
+  background:rgba(7,7,12,.72);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.08em;color:var(--ink)}
+.brand svg{width:22px;height:22px}
+nav .links{margin-left:auto;display:flex;gap:6px}
+nav .links a{
+  font-family:var(--label);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--mute);padding:8px 14px;border-radius:999px;transition:.2s;
+}
+nav .links a:hover,nav .links a:focus-visible{color:var(--pink-soft);background:rgba(255,158,210,.08);outline:none}
+
+/* ---------- hero ---------- */
+header{position:relative;z-index:1;text-align:center;padding:clamp(70px,12vw,130px) 20px 60px;overflow:hidden}
+.nebula{
+  position:absolute;inset:-30% -20%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(38% 30% at 50% 42%, rgba(255,111,181,.28), transparent 70%),
+    radial-gradient(28% 24% at 38% 34%, rgba(255,158,210,.20), transparent 70%),
+    radial-gradient(30% 26% at 64% 52%, rgba(143,123,255,.14), transparent 70%);
+  filter:blur(30px);
+  animation:breathe 12s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.07);opacity:1}}
+.eyebrow{
+  font-family:var(--label);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:18px;
+}
+h1{
+  font-family:var(--disp);font-weight:900;
+  font-size:clamp(1.9rem,6.5vw,4.4rem);
+  line-height:1.05;letter-spacing:.01em;
+  background:linear-gradient(180deg,#fff 20%,var(--pink) 70%,var(--rose));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px rgba(255,111,181,.25);
+}
+h1 span{display:block;font-size:.34em;font-weight:500;letter-spacing:.42em;color:var(--pink-soft);-webkit-text-fill-color:var(--pink-soft);margin-bottom:14px}
+.tagline{max-width:560px;margin:22px auto 0;color:var(--mute);font-size:1.02rem}
+
+/* saga timeline */
+.saga{
+  display:flex;justify-content:center;align-items:center;gap:0;
+  margin:46px auto 0;max-width:640px;flex-wrap:wrap;
+}
+.saga-node{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:9px;padding:0 clamp(10px,3vw,26px);position:relative}
+.saga-node::after{
+  content:'';position:absolute;top:7px;left:calc(50% + 12px);width:calc(100% - 24px);height:1px;
+  background:linear-gradient(90deg,var(--line),rgba(255,158,210,.4));
+}
+.saga-node:last-child::after{display:none}
+.saga-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--pink);background:var(--void);box-shadow:0 0 12px rgba(255,158,210,.5);transition:.2s}
+.saga-node.asc .saga-dot{
+  width:20px;height:20px;border:none;border-radius:0;box-shadow:none;background:none;position:relative;
+}
+.saga-node.asc .saga-dot::before{
+  content:'✦';position:absolute;inset:0;display:grid;place-items:center;
+  color:var(--pink);font-size:20px;line-height:1;text-shadow:0 0 14px var(--rose);
+}
+.saga-label{font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);transition:.2s;white-space:nowrap}
+.saga-node:hover .saga-label,.saga-node:focus-visible .saga-label{color:var(--pink-soft)}
+.saga-node:hover .saga-dot{background:var(--pink)}
+.saga-node:focus-visible{outline:1px solid var(--pink);outline-offset:6px;border-radius:6px}
+
+/* ---------- sections ---------- */
+main{position:relative;z-index:1}
+section{max-width:1180px;margin:0 auto;padding:clamp(46px,7vw,84px) clamp(16px,4vw,40px)}
+.sec-head{margin-bottom:34px}
+.sec-head .eyebrow{margin-bottom:10px}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(1.25rem,3.4vw,1.9rem);letter-spacing:.02em}
+.sec-sub{color:var(--mute);margin-top:8px;max-width:600px}
+
+/* ---------- roster controls ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px;align-items:center}
+.search{
+  flex:1;min-width:200px;
+  background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;color:var(--ink);font-family:var(--body);font-size:.95rem;
+}
+.search::placeholder{color:var(--mute)}
+.search:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,158,210,.12)}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap}
+.fchip{
+  font-family:var(--label);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);color:var(--mute);
+  padding:8px 15px;border-radius:999px;transition:.2s;
+}
+.fchip:hover{border-color:var(--pink);color:var(--pink-soft)}
+.fchip.on{background:rgba(255,158,210,.12);border-color:var(--pink);color:var(--pink-soft)}
+.fchip:focus-visible{outline:1px solid var(--pink);outline-offset:2px}
+
+/* ---------- roster grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:16px}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;text-align:left;padding:0;color:var(--ink);
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+  display:flex;flex-direction:column;
+}
+.card:hover,.card:focus-visible{
+  transform:translateY(-4px);
+  border-color:var(--cc,var(--pink));
+  box-shadow:0 10px 34px -12px color-mix(in srgb,var(--cc,var(--pink)) 55%,transparent);
+  outline:none;
+}
+.card-art{
+  aspect-ratio:3/4;position:relative;overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 50% 110%, color-mix(in srgb,var(--cc,var(--pink)) 32%,transparent), transparent 60%),
+    linear-gradient(180deg,var(--panel-2),var(--panel));
+}
+.card-art img{width:100%;height:100%;object-fit:cover}
+.card-initial{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--disp);font-weight:900;font-size:3.2rem;
+  color:color-mix(in srgb,var(--cc,var(--pink)) 75%,#fff);
+  opacity:.5;text-shadow:0 0 30px var(--cc,var(--pink));
+}
+.vcount{
+  position:absolute;top:10px;right:10px;
+  font-family:var(--label);font-size:.62rem;letter-spacing:.08em;
+  background:rgba(7,7,12,.75);border:1px solid var(--line);border-radius:999px;
+  padding:3px 9px;color:var(--pink-soft);backdrop-filter:blur(6px);
+}
+.card-body{padding:12px 14px 15px}
+.card-name{font-family:var(--disp);font-weight:700;font-size:.86rem;letter-spacing:.02em}
+.card-sub{font-family:var(--label);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-top:5px}
+.empty{
+  grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--mute);
+  border:1px dashed var(--line);border-radius:var(--radius);
+}
+
+/* ---------- character modal ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:100;display:none;
+  background:rgba(5,5,9,.8);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.overlay.open{display:flex}
+.modal{
+  width:min(880px,100%);max-height:calc(100vh - 40px);overflow-y:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  box-shadow:0 30px 90px -20px rgba(255,111,181,.25);
+  animation:rise .3s ease;
+}
+@keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.modal-top{display:flex;align-items:flex-start;gap:14px;padding:22px 24px 0}
+.modal-name{font-family:var(--disp);font-weight:900;font-size:clamp(1.2rem,3.5vw,1.7rem);
+  background:linear-gradient(180deg,#fff,var(--mc,var(--pink)));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.modal-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{font-family:var(--label);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--mute)}
+.close{
+  margin-left:auto;flex-shrink:0;width:36px;height:36px;border-radius:50%;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--mute);font-size:16px;
+  transition:.2s;
+}
+.close:hover{color:var(--ink);border-color:var(--pink)}
+.vtabs{display:flex;gap:6px;flex-wrap:wrap;padding:18px 24px 0}
+.vtab{
+  font-family:var(--label);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--mute);
+  padding:7px 14px;border-radius:999px;transition:.2s;
+}
+.vtab.on{background:color-mix(in srgb,var(--mc,var(--pink)) 16%,transparent);border-color:var(--mc,var(--pink));color:#fff}
+.vtab:focus-visible{outline:1px solid var(--pink);outline-offset:2px}
+.modal-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;padding:20px 24px 26px}
+.modal-art{
+  aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden;position:relative;
+  background:
+    radial-gradient(120% 90% at 50% 110%, color-mix(in srgb,var(--mc,var(--pink)) 34%,transparent), transparent 60%),
+    linear-gradient(180deg,var(--panel-2),#0c0b12);
+  border:1px solid var(--line);
+}
+.modal-art img{width:100%;height:100%;object-fit:cover}
+.vmeta{display:flex;flex-direction:column;gap:14px}
+.vrow{display:flex;gap:10px;flex-wrap:wrap}
+.stat{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+  padding:8px 14px;
+}
+.stat b{font-family:var(--label);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:block;font-weight:500}
+.stat span{font-size:.9rem;font-weight:500}
+.vdesc{color:#cfcadb;font-size:.96rem}
+.forms h4,.appears h4{
+  font-family:var(--label);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:8px;font-weight:600;
+}
+.form-chips{display:flex;gap:7px;flex-wrap:wrap}
+.form-chip{
+  font-size:.8rem;font-weight:500;padding:5px 13px;border-radius:999px;
+  background:color-mix(in srgb,var(--mc,var(--pink)) 10%,var(--panel-2));
+  border:1px solid color-mix(in srgb,var(--mc,var(--pink)) 40%,var(--line));
+  color:var(--pink-soft);
+}
+.standalone-note{
+  font-family:var(--label);font-size:.64rem;letter-spacing:.08em;color:var(--violet);
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ---------- episode guide ---------- */
+.era-block{margin-bottom:14px}
+.era-title{
+  font-family:var(--label);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--mute);display:flex;align-items:center;gap:14px;margin:26px 0 14px;
+}
+.era-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.season-pills{display:flex;gap:8px;flex-wrap:wrap}
+.spill{
+  font-family:var(--label);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);color:var(--mute);
+  padding:9px 18px;border-radius:999px;transition:.2s;
+}
+.spill.on{background:rgba(255,158,210,.12);border-color:var(--pink);color:var(--pink-soft)}
+.spill:hover{border-color:var(--pink)}
+.spill:focus-visible{outline:1px solid var(--pink);outline-offset:2px}
+
+.season-review{
+  margin-top:28px;background:linear-gradient(160deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;
+  position:relative;overflow:hidden;
+}
+.season-review::before{
+  content:'';position:absolute;top:-40%;right:-10%;width:50%;height:180%;
+  background:radial-gradient(closest-side,rgba(255,158,210,.1),transparent);pointer-events:none;
+}
+.sr-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sr-title{font-family:var(--disp);font-weight:700;font-size:1.15rem}
+.sr-verdict{
+  font-family:var(--label);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--rose);border:1px solid color-mix(in srgb,var(--rose) 50%,var(--line));
+  border-radius:999px;padding:4px 12px;
+}
+.sr-rating{margin-left:auto;font-family:var(--disp);font-weight:900;font-size:1.3rem;color:var(--pink)}
+.sr-rating small{font-size:.6em;color:var(--mute);font-weight:500}
+.sr-body{margin-top:12px;color:#cfcadb}
+.sr-label{font-family:var(--label);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+
+.ep-list{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.ep{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;transition:border-color .2s;
+}
+.ep:hover{border-color:color-mix(in srgb,var(--pink) 45%,var(--line))}
+.ep-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ep-code{font-family:var(--label);font-size:.66rem;letter-spacing:.14em;color:var(--pink);white-space:nowrap}
+.ep-title{font-family:var(--disp);font-weight:700;font-size:.95rem}
+.ep-rating{margin-left:auto;font-family:var(--label);font-size:.72rem;color:var(--pink-soft);white-space:nowrap}
+.ep-syn{margin-top:8px;color:var(--mute);font-size:.93rem}
+.ep-cast{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.cast-chip{
+  font-size:.76rem;font-weight:500;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--pink-soft);
+  transition:.2s;
+}
+.cast-chip:hover{border-color:var(--pink);background:rgba(255,158,210,.1)}
+
+/* ---------- footer ---------- */
+footer{
+  border-top:1px solid var(--line);padding:36px 20px;text-align:center;
+  color:var(--mute);font-size:.85rem;position:relative;z-index:1;
+}
+footer .glyph{color:var(--pink);font-size:1.1rem;display:block;margin-bottom:8px;background:none;border:none;cursor:pointer;width:100%}
+
+/* ============================================================
+   CREATOR MODE (editor)
+   ============================================================ */
+.ed-ov{position:fixed;inset:0;z-index:200;display:none;background:rgba(5,5,9,.92);backdrop-filter:blur(10px)}
+.ed-ov.open{display:block}
+.ed-shell{max-width:860px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding:16px}
+.ed-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:12px}
+.ed-title{font-family:var(--disp);font-weight:900;font-size:1rem;
+  background:linear-gradient(180deg,#fff,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ed-hint{color:var(--mute);font-size:.78rem;flex:1;min-width:200px}
+.ed-close{width:36px;height:36px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line);color:var(--mute);font-size:15px}
+.ed-close:hover{color:var(--ink);border-color:var(--pink)}
+.ed-actions{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:12px}
+.ed-btn{font-family:var(--label);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:9px 15px;border-radius:999px;transition:.2s}
+.ed-btn:hover{border-color:var(--pink);color:var(--pink-soft)}
+.ed-btn.primary{background:linear-gradient(135deg,var(--pink),var(--rose));border:none;color:#1a0812;font-weight:600}
+.ed-btn.primary:hover{filter:brightness(1.08);color:#1a0812}
+.ed-draft{background:color-mix(in srgb,var(--violet) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--violet) 40%,var(--line));
+  border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--pink-soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ed-tabs{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:14px}
+.ed-tab{font-family:var(--label);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:8px 15px;border-radius:999px;transition:.2s}
+.ed-tab.on{background:rgba(255,158,210,.12);border-color:var(--pink);color:var(--pink-soft)}
+.ed-body{flex:1;overflow-y:auto;padding-bottom:30px}
+.ed-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.ed-card.sub{background:var(--panel-2);margin-top:10px}
+.ed-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ed-row .grow{flex:1;min-width:140px}
+.ed-field{margin-bottom:10px}
+.ed-field label{font-family:var(--label);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:block;margin-bottom:5px}
+.ed-ov input[type=text],.ed-ov input[type=number],.ed-ov input[type=url],.ed-ov textarea,.ed-ov select{
+  width:100%;background:var(--void);border:1px solid var(--line);border-radius:8px;
+  padding:8px 11px;color:var(--ink);font-family:var(--body);font-size:.9rem}
+.ed-ov input:focus,.ed-ov textarea:focus,.ed-ov select:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,158,210,.1)}
+.ed-ov textarea{resize:vertical;min-height:64px}
+.ed-ov input[type=color]{width:44px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--void);padding:3px;cursor:pointer}
+.ed-ov input[type=checkbox]{width:auto;accent-color:var(--rose)}
+.ed-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.ed-two{grid-template-columns:1fr}}
+.ed-name{font-family:var(--disp);font-weight:700;font-size:.88rem;flex:1;min-width:120px;text-align:left;background:none;border:none;color:var(--ink);padding:4px 0;cursor:pointer}
+.ed-name:hover{color:var(--pink-soft)}
+.ed-del{background:none;border:1px solid color-mix(in srgb,var(--rose) 40%,var(--line));color:var(--rose);
+  border-radius:999px;padding:6px 12px;font-family:var(--label);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase}
+.ed-add{width:100%;border:1px dashed var(--line);background:none;color:var(--mute);border-radius:12px;
+  padding:12px;font-family:var(--label);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;transition:.2s}
+.ed-add:hover{border-color:var(--pink);color:var(--pink-soft)}
+.chk-row{display:flex;gap:12px;flex-wrap:wrap}
+.chk{display:flex;align-items:center;gap:6px;font-size:.84rem;color:#cfcadb}
+.ed-note{color:var(--mute);font-size:.78rem;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div id="stars" aria-hidden="true"></div>
+
+<nav>
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z" fill="url(#g)"/><defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#ffc9e4"/><stop offset="1" stop-color="#ff6fb5"/></linearGradient></defs></svg>
+    DB&nbsp;VIRORA
+  </div>
+  <div class="links">
+    <a href="#roster">Roster</a>
+    <a href="#episodes">Episode Guide</a>
+  </div>
+</nav>
+
+<header>
+  <div class="nebula" aria-hidden="true"></div>
+  <p class="eyebrow">An Original Animated Series</p>
+  <h1><span>Dragon Ball</span>VIRORA</h1>
+  <p class="tagline" id="hero-tagline"></p>
+  <div class="saga" id="saga-timeline" role="navigation" aria-label="Season timeline"></div>
+</header>
+
+<main>
+  <!-- ================= ROSTER ================= -->
+  <section id="roster">
+    <div class="sec-head">
+      <p class="eyebrow">Character Glossary</p>
+      <h2>The Roster</h2>
+      <p class="sec-sub">Every fighter, ally, and threat to appear in the series. Open a character to explore their versions across seasons.</p>
+    </div>
+    <div class="controls">
+      <input class="search" id="search" type="search" placeholder="Search characters…" aria-label="Search characters">
+      <div class="chip-row" id="era-filters"></div>
+    </div>
+    <div class="grid" id="roster-grid"></div>
+  </section>
+
+  <!-- ================= EPISODES ================= -->
+  <section id="episodes">
+    <div class="sec-head">
+      <p class="eyebrow">Episode &amp; Season Guide</p>
+      <h2>The Saga So Far</h2>
+      <p class="sec-sub">Season reviews and episode breakdowns, written by the creator.</p>
+    </div>
+    <div id="season-nav"></div>
+    <div id="season-content"></div>
+  </section>
+</main>
+
+<footer>
+  <button class="glyph" id="glyph" aria-label="Series glyph">✦</button>
+  Dragon Ball Virora is an animated fan series.<br>
+  Dragon Ball is the property of Akira Toriyama, Shueisha, and Toei Animation. This is a non-commercial fan project.
+</footer>
+
+<!-- character modal -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Character details">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- ============ CREATOR MODE ============ -->
+<div class="ed-ov" id="editor-ov" role="dialog" aria-modal="true" aria-label="Creator Mode">
+  <div class="ed-shell">
+    <div class="ed-top">
+      <span class="ed-title">✦ CREATOR MODE</span>
+      <span class="ed-hint">Edits preview live on the page behind this panel. To make them permanent, download the updated site and replace the file in your GitHub repo.</span>
+      <button class="ed-close" id="ed-close" aria-label="Close editor">✕</button>
+    </div>
+    <div class="ed-actions">
+      <button class="ed-btn primary" id="ed-download">⬇ Download updated site</button>
+      <button class="ed-btn" id="ed-export">Backup data (JSON)</button>
+      <button class="ed-btn" id="ed-import">Import data</button>
+      <input type="file" id="ed-import-file" accept=".json" style="display:none">
+    </div>
+    <div id="ed-draft"></div>
+    <div class="ed-tabs">
+      <button class="ed-tab on" data-etab="series">Series</button>
+      <button class="ed-tab" data-etab="seasons">Seasons</button>
+      <button class="ed-tab" data-etab="characters">Characters</button>
+      <button class="ed-tab" data-etab="episodes">Episodes</button>
+    </div>
+    <div class="ed-body" id="ed-body"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ██  SERIES DATA — edited by Creator Mode, or by hand  ██
+     ============================================================ -->
+<script type="application/json" id="db-data">
+{
+  "series": {
+    "tagline": "One Saiyan's rise through gods, rivals, and the void between worlds — told across the original saga and its ascension."
+  },
+  "eras": [
+    { "id": "virora", "name": "Dragon Ball Virora" },
+    { "id": "ascension", "name": "Dragon Ball Virora: Ascension" }
+  ],
+  "seasons": [
+    {
+      "id": "s1", "era": "virora", "label": "Season 1", "short": "S1",
+      "verdict": "Where it began", "rating": null,
+      "review": "Write your Season 1 review here — what the season set out to do, the arcs that defined it, and how it lands looking back."
+    },
+    {
+      "id": "s2", "era": "virora", "label": "Season 2", "short": "S2",
+      "verdict": "", "rating": null,
+      "review": "Write your Season 2 review here."
+    },
+    {
+      "id": "s3", "era": "virora", "label": "Season 3", "short": "S3",
+      "verdict": "Finale incoming", "rating": null,
+      "review": "Season 3 builds to the series' biggest turning point — the finale that closes the original saga and opens the door to Ascension."
+    },
+    {
+      "id": "asc1", "era": "ascension", "label": "Season 1", "short": "ASC S1",
+      "verdict": "The new era", "rating": null,
+      "review": "The soft reboot begins. Same story, same events, same Virora — a new direction that carries everything forward while keeping the core of who she is."
+    }
+  ],
+  "characters": [
+    {
+      "id": "virora", "name": "Virora", "color": "#ff9ed2",
+      "tags": ["Saiyan", "Protagonist"],
+      "variants": [
+        {
+          "id": "virora-s1", "label": "Season 1", "image": "",
+          "status": "Alive", "debut": "Season 1",
+          "desc": "Virora as she was at the start of it all — write her Season 1 profile here: who she was, what she wanted, and what the first season put her through.",
+          "forms": ["Base"]
+        },
+        {
+          "id": "virora-s2", "label": "Season 2", "image": "",
+          "status": "Alive", "debut": "Season 2",
+          "desc": "How Season 2 changed her — new power, new scars, new resolve. Write it here.",
+          "forms": ["Base"]
+        },
+        {
+          "id": "virora-s3", "label": "Season 3", "image": "",
+          "status": "Alive", "debut": "Season 3",
+          "desc": "Virora at the edge of the original saga's finale. Write her Season 3 profile here.",
+          "forms": ["Base"]
+        },
+        {
+          "id": "virora-asc", "label": "Ascension", "image": "",
+          "standalone": true, "status": "Alive", "debut": "Ascension — Season 1",
+          "desc": "The same Virora, ascended. A soft-reboot self in the Shippuden tradition — everything that happened still happened, but the fighter walking into this era is not the one who started the last.",
+          "forms": ["Base"]
+        }
+      ]
+    },
+    {
+      "id": "example-rival", "name": "Example Rival", "color": "#8f7bff",
+      "tags": ["Rival", "Edit Me"],
+      "variants": [
+        {
+          "id": "rival-s1", "label": "Season 1", "image": "",
+          "status": "Unknown", "debut": "Season 1",
+          "desc": "This is a sample entry showing the format. Open Creator Mode, rename me, and make me real — or delete me.",
+          "forms": ["Base", "Awakened"]
+        }
+      ]
+    },
+    {
+      "id": "example-ally", "name": "Example Ally", "color": "#7ee0d2",
+      "tags": ["Ally", "Edit Me"],
+      "variants": [
+        {
+          "id": "ally-s2", "label": "Season 2", "image": "",
+          "status": "Alive", "debut": "Season 2",
+          "desc": "A second sample entry. A character only needs one variant until later seasons change them.",
+          "forms": ["Base"]
+        }
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "s1e1", "season": "s1", "num": 1,
+      "title": "Example Episode Title",
+      "synopsis": "Write your episode summary and review here — what happened, what mattered, and your take on it. Delete this example and add your real episodes.",
+      "cast": ["virora", "example-rival"], "rating": null
+    },
+    {
+      "id": "s3-finale", "season": "s3", "num": 99,
+      "title": "Season Finale — Coming Soon",
+      "synopsis": "The final episode of the original saga. Everything Seasons 1–3 built toward. When it drops, replace this placeholder with the real breakdown.",
+      "cast": ["virora"], "rating": null
+    }
+  ]
+}
+</script>
+
+<script>
+/* ==============================================================
+   ENGINE
+   ============================================================== */
+let DB = JSON.parse(document.getElementById('db-data').textContent);
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2,8);
+const DRAFT_KEY = 'dbv_site_draft';
+
+/* ---- star field ---- */
+(function stars(){
+  const wrap = $('#stars'); const n = 90;
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*1.8+.6;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--tw:${(Math.random()*5+3).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s`;
+    wrap.appendChild(s);
+  }
+})();
+
+/* ---- saga timeline ---- */
+function renderSaga(){
+  const wrap = $('#saga-timeline'); wrap.innerHTML='';
+  DB.seasons.forEach(se=>{
+    const b=document.createElement('button');
+    b.className='saga-node'+(se.era==='ascension'?' asc':'');
+    b.innerHTML=`<span class="saga-dot"></span><span class="saga-label">${esc(se.short)}</span>`;
+    b.setAttribute('aria-label',`Jump to ${se.label}`);
+    b.onclick=()=>{ selectSeason(se.id); $('#episodes').scrollIntoView({behavior:'smooth'}); };
+    wrap.appendChild(b);
+  });
+}
+
+/* ---- roster ---- */
+let eraFilter='all', query='';
+
+function rosterEntries(){
+  const entries=[];
+  DB.characters.forEach(ch=>{
+    if(!ch.variants.length)return;
+    entries.push({ch, variant:ch.variants[0], vIndex:0, isStandalone:false});
+    ch.variants.forEach((v,i)=>{
+      if(v.standalone) entries.push({ch, variant:v, vIndex:i, isStandalone:true});
+    });
+  });
+  return entries;
+}
+function entryEra(entry){
+  const d=(entry.variant.debut||'').toLowerCase();
+  return d.includes('ascension') ? 'ascension' : 'virora';
+}
+function renderRoster(){
+  const grid=$('#roster-grid'); grid.innerHTML='';
+  const q=query.trim().toLowerCase();
+  const list=rosterEntries().filter(e=>{
+    if(eraFilter!=='all' && entryEra(e)!==eraFilter) return false;
+    if(q && !(e.ch.name.toLowerCase().includes(q)||(e.isStandalone&&e.variant.label.toLowerCase().includes(q)))) return false;
+    return true;
+  });
+  if(!list.length){
+    grid.innerHTML='<div class="empty">No characters match. The void is quiet here — for now.</div>';
+    return;
+  }
+  list.forEach(e=>{
+    const displayName=e.isStandalone ? `${e.ch.name} · ${e.variant.label}` : e.ch.name;
+    const btn=document.createElement('button');
+    btn.className='card'; btn.style.setProperty('--cc', e.ch.color||'#ff9ed2');
+    const art=e.variant.image
+      ? `<img src="${esc(e.variant.image)}" alt="${esc(displayName)}" loading="lazy">`
+      : `<div class="card-initial">${esc((e.ch.name||'?')[0])}</div>`;
+    const vc=e.ch.variants.length>1 && !e.isStandalone ? `<span class="vcount">${e.ch.variants.length} VER</span>`:'';
+    btn.innerHTML=`
+      <div class="card-art">${art}${vc}</div>
+      <div class="card-body">
+        <div class="card-name">${esc(displayName)}</div>
+        <div class="card-sub">${esc((e.ch.tags||[]).join(' · '))}</div>
+      </div>`;
+    btn.onclick=()=>openChar(e.ch.id, e.vIndex);
+    grid.appendChild(btn);
+  });
+}
+(function eraChips(){
+  const wrap=$('#era-filters');
+  const opts=[{id:'all',label:'All Eras'},{id:'virora',label:'Virora'},{id:'ascension',label:'Ascension'}];
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='fchip'+(o.id==='all'?' on':''); b.textContent=o.label;
+    b.onclick=()=>{ eraFilter=o.id;
+      wrap.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); renderRoster(); };
+    wrap.appendChild(b);
+  });
+})();
+$('#search').addEventListener('input',e=>{query=e.target.value;renderRoster();});
+
+/* ---- character modal ---- */
+let lastFocus=null;
+function openChar(id, vIndex=0){
+  const ch=DB.characters.find(c=>c.id===id); if(!ch)return;
+  lastFocus=document.activeElement;
+  const ov=$('#overlay'), m=$('#modal');
+  m.style.setProperty('--mc', ch.color||'#ff9ed2');
+  ov.classList.add('open'); document.body.style.overflow='hidden';
+  renderCharModal(ch, vIndex);
+  m.querySelector('.close').focus();
+}
+function renderCharModal(ch, vIndex){
+  const m=$('#modal'); const v=ch.variants[vIndex]||ch.variants[0];
+  const tabs=ch.variants.map((vv,i)=>
+    `<button class="vtab${i===vIndex?' on':''}" data-i="${i}">${esc(vv.label)}</button>`).join('');
+  const art=v.image
+    ? `<img src="${esc(v.image)}" alt="${esc(ch.name)} — ${esc(v.label)}">`
+    : `<div class="card-initial" style="font-size:5rem">${esc((ch.name||'?')[0])}</div>`;
+  const forms=(v.forms&&v.forms.length)
+    ? `<div class="forms"><h4>Forms &amp; Transformations</h4><div class="form-chips">${v.forms.map(f=>`<span class="form-chip">${esc(f)}</span>`).join('')}</div></div>`:'';
+  const standalone=v.standalone?`<div class="standalone-note">✦ This version also holds its own slot in the roster</div>`:'';
+  const eps=DB.episodes.filter(e=>(e.cast||[]).includes(ch.id));
+  const appears=eps.length
+    ? `<div class="appears"><h4>Appears In</h4><div class="form-chips">${eps.map(e=>{
+        const se=DB.seasons.find(s=>s.id===e.season);
+        return `<button class="cast-chip" data-season="${esc(e.season)}">${esc(se?se.short:'')} · ${esc(e.title)}</button>`;
+      }).join('')}</div></div>`:'';
+  m.innerHTML=`
+    <div class="modal-top">
+      <div>
+        <div class="modal-name">${esc(ch.name)}</div>
+        <div class="modal-tags">${(ch.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+      </div>
+      <button class="close" aria-label="Close">✕</button>
+    </div>
+    <div class="vtabs">${tabs}</div>
+    <div class="modal-grid">
+      <div class="modal-art">${art}</div>
+      <div class="vmeta">
+        <div class="vrow">
+          <div class="stat"><b>Status</b><span>${esc(v.status||'—')}</span></div>
+          <div class="stat"><b>Debut</b><span>${esc(v.debut||'—')}</span></div>
+        </div>
+        <p class="vdesc">${esc(v.desc||'')}</p>
+        ${forms}
+        ${standalone}
+        ${appears}
+      </div>
+    </div>`;
+  m.querySelector('.close').onclick=closeChar;
+  m.querySelectorAll('.vtab').forEach(t=>t.onclick=()=>renderCharModal(ch,+t.dataset.i));
+  m.querySelectorAll('[data-season]').forEach(b=>b.onclick=()=>{
+    closeChar(); selectSeason(b.dataset.season);
+    $('#episodes').scrollIntoView({behavior:'smooth'});
+  });
+}
+function closeChar(){
+  $('#overlay').classList.remove('open');
+  document.body.style.overflow='';
+  if(lastFocus&&lastFocus.focus)lastFocus.focus();
+}
+$('#overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeChar();});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('#editor-ov').classList.contains('open')) closeEditor();
+  else closeChar();
+});
+
+/* ---- episode guide ---- */
+let activeSeason=DB.seasons[0]?.id;
+
+function renderSeasonNav(){
+  const wrap=$('#season-nav'); wrap.innerHTML='';
+  DB.eras.forEach(era=>{
+    const seasons=DB.seasons.filter(s=>s.era===era.id);
+    if(!seasons.length)return;
+    const block=document.createElement('div'); block.className='era-block';
+    block.innerHTML=`<div class="era-title">${esc(era.name)}</div>`;
+    const pills=document.createElement('div'); pills.className='season-pills';
+    seasons.forEach(se=>{
+      const b=document.createElement('button');
+      b.className='spill'+(se.id===activeSeason?' on':'');
+      b.textContent=se.label; b.dataset.season=se.id;
+      b.onclick=()=>selectSeason(se.id);
+      pills.appendChild(b);
+    });
+    block.appendChild(pills); wrap.appendChild(block);
+  });
+}
+function selectSeason(id){
+  activeSeason=id;
+  renderSeasonNav();
+  renderSeasonContent();
+}
+function renderSeasonContent(){
+  const wrap=$('#season-content');
+  if(!DB.seasons.find(s=>s.id===activeSeason)) activeSeason=DB.seasons[0]?.id;
+  const se=DB.seasons.find(s=>s.id===activeSeason);
+  if(!se){wrap.innerHTML='';return;}
+  const era=DB.eras.find(e=>e.id===se.era);
+  const eps=DB.episodes.filter(e=>e.season===se.id).sort((a,b)=>a.num-b.num);
+  const rating=se.rating!=null&&se.rating!==''?`<div class="sr-rating">${esc(se.rating)}<small>/10</small></div>`:'';
+  const verdict=se.verdict?`<span class="sr-verdict">${esc(se.verdict)}</span>`:'';
+  const epHtml=eps.length?eps.map(e=>{
+    const castChips=(e.cast||[]).map(cid=>{
+      const c=DB.characters.find(x=>x.id===cid);
+      return c?`<button class="cast-chip" data-char="${esc(cid)}">${esc(c.name)}</button>`:'';
+    }).join('');
+    const r=e.rating!=null&&e.rating!==''?`<span class="ep-rating">★ ${esc(e.rating)}/10</span>`:'';
+    return `<div class="ep">
+      <div class="ep-head">
+        <span class="ep-code">${esc(se.short)} · EP ${String(e.num).padStart(2,'0')}</span>
+        <span class="ep-title">${esc(e.title)}</span>${r}
+      </div>
+      <p class="ep-syn">${esc(e.synopsis)}</p>
+      ${castChips?`<div class="ep-cast">${castChips}</div>`:''}
+    </div>`;
+  }).join(''):`<div class="empty" style="margin-top:18px">No episodes logged for this season yet. The story is still being written.</div>`;
+  wrap.innerHTML=`
+    <div class="season-review">
+      <div class="sr-head">
+        <span class="sr-title">${esc(era?era.name:'')} — ${esc(se.label)}</span>
+        ${verdict}${rating}
+      </div>
+      <p class="sr-label">Creator's Review</p>
+      <p class="sr-body">${esc(se.review||'Review coming soon.')}</p>
+    </div>
+    <div class="ep-list">${epHtml}</div>`;
+  wrap.querySelectorAll('[data-char]').forEach(b=>b.onclick=()=>openChar(b.dataset.char));
+}
+
+function renderAll(){
+  $('#hero-tagline').textContent = DB.series.tagline;
+  renderSaga();
+  renderRoster();
+  renderSeasonNav();
+  renderSeasonContent();
+}
+
+/* ==============================================================
+   CREATOR MODE (editor)
+   ============================================================== */
+/* ★ Your Creator Mode passcode — change this to whatever you want.
+   Note: this deters snoops, but anyone tech-savvy enough to read the
+   page source can find it — so don't reuse a real password here.
+   (They still can't change your live site either way; only your
+   GitHub account can do that.) */
+const EDIT_PASS = "ASCEND";
+let edUnlocked = false;
+
+let renderTimer=null;
+function markDirty(){
+  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(DB)); }catch(e){}
+  clearTimeout(renderTimer);
+  renderTimer=setTimeout(renderAll, 400);
+}
+function slug(name){
+  let base=(name||'char').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'item';
+  let s=base, n=2;
+  const taken=new Set([
+    ...DB.characters.map(c=>c.id),
+    ...DB.seasons.map(x=>x.id),
+    ...DB.episodes.map(x=>x.id)
+  ]);
+  while(taken.has(s)) s=base+'-'+(n++);
+  return s;
+}
+
+/* open/close */
+function openEditor(){
+  if(!edUnlocked){
+    const p=prompt('Creator Mode passcode:');
+    if(p===null) return;
+    if(p!==EDIT_PASS){ alert('Not quite. This panel is for the creator.'); return; }
+    edUnlocked=true;
+  }
+  $('#editor-ov').classList.add('open');
+  document.body.style.overflow='hidden';
+  checkDraft();
+  renderEditorTab();
+}
+function closeEditor(){
+  $('#editor-ov').classList.remove('open');
+  document.body.style.overflow='';
+}
+$('#ed-close').onclick=closeEditor;
+if(location.hash==='#editor') setTimeout(openEditor,100);
+window.addEventListener('hashchange',()=>{if(location.hash==='#editor')openEditor();});
+/* triple-tap the footer ✦ */
+let taps=0,tapTimer=null;
+$('#glyph').onclick=()=>{
+  taps++; clearTimeout(tapTimer);
+  tapTimer=setTimeout(()=>taps=0,1200);
+  if(taps>=3){taps=0;openEditor();}
+};
+
+/* draft restore */
+function checkDraft(){
+  const bar=$('#ed-draft'); bar.innerHTML='';
+  let draft=null;
+  try{ draft=localStorage.getItem(DRAFT_KEY); }catch(e){}
+  if(!draft || draft===JSON.stringify(DB)) return;
+  bar.innerHTML=`<div class="ed-draft">
+    <span>Unsaved draft found from a previous session.</span>
+    <button class="ed-btn" id="draft-restore">Restore draft</button>
+    <button class="ed-btn" id="draft-discard">Discard</button>
+  </div>`;
+  $('#draft-restore').onclick=()=>{
+    try{ DB=JSON.parse(draft); renderAll(); renderEditorTab(); }catch(e){alert('Draft was corrupted and couldn\'t be restored.');}
+    bar.innerHTML='';
+  };
+  $('#draft-discard').onclick=()=>{
+    try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+    bar.innerHTML='';
+  };
+}
+
+/* tabs */
+let eTab='series';
+const expanded=new Set();
+document.querySelectorAll('.ed-tab').forEach(t=>t.onclick=()=>{
+  eTab=t.dataset.etab;
+  document.querySelectorAll('.ed-tab').forEach(x=>x.classList.toggle('on',x===t));
+  renderEditorTab();
+});
+function renderEditorTab(){
+  const body=$('#ed-body');
+  if(eTab==='series') renderEdSeries(body);
+  else if(eTab==='seasons') renderEdSeasons(body);
+  else if(eTab==='characters') renderEdCharacters(body);
+  else renderEdEpisodes(body);
+}
+/* helper: bind text input -> object key */
+function bind(el,obj,key,after){
+  el.oninput=()=>{obj[key]=el.value;markDirty();if(after)after();};
+}
+
+/* ---- Series tab ---- */
+function renderEdSeries(body){
+  body.innerHTML=`<div class="ed-card">
+    <div class="ed-field"><label>Series tagline (hero text)</label>
+      <textarea id="es-tag">${esc(DB.series.tagline)}</textarea></div>
+    <p class="ed-note">Eras are fixed as "Dragon Ball Virora" and "Dragon Ball Virora: Ascension" — tell Claude if you ever need a third era.</p>
+  </div>`;
+  bind($('#es-tag'),DB.series,'tagline');
+}
+
+/* ---- Seasons tab ---- */
+function renderEdSeasons(body){
+  body.innerHTML='';
+  DB.seasons.forEach(se=>{
+    const card=document.createElement('div');card.className='ed-card';
+    card.innerHTML=`
+      <div class="ed-two">
+        <div class="ed-field"><label>Label</label><input type="text" value="${esc(se.label)}" data-f="label"></div>
+        <div class="ed-field"><label>Short code (timeline)</label><input type="text" value="${esc(se.short)}" data-f="short"></div>
+      </div>
+      <div class="ed-two">
+        <div class="ed-field"><label>Era</label>
+          <select data-f="era">
+            <option value="virora" ${se.era==='virora'?'selected':''}>Dragon Ball Virora</option>
+            <option value="ascension" ${se.era==='ascension'?'selected':''}>Ascension</option>
+          </select></div>
+        <div class="ed-field"><label>Rating /10 (blank to hide)</label><input type="number" min="0" max="10" step="0.5" value="${se.rating??''}" data-f="rating"></div>
+      </div>
+      <div class="ed-field"><label>Verdict stamp (short)</label><input type="text" value="${esc(se.verdict)}" data-f="verdict"></div>
+      <div class="ed-field"><label>Your season review</label><textarea data-f="review">${esc(se.review)}</textarea></div>
+      <button class="ed-del">Delete season</button>`;
+    card.querySelectorAll('[data-f]').forEach(el=>{
+      const f=el.dataset.f;
+      if(f==='rating'){ el.oninput=()=>{se.rating=el.value===''?null:parseFloat(el.value);markDirty();}; }
+      else if(f==='era'){ el.onchange=()=>{se.era=el.value;markDirty();}; }
+      else bind(el,se,f);
+    });
+    card.querySelector('.ed-del').onclick=()=>{
+      const epCount=DB.episodes.filter(e=>e.season===se.id).length;
+      if(!confirm(`Delete "${se.label}"?${epCount?` Its ${epCount} episode(s) will be deleted too.`:''}`))return;
+      DB.episodes=DB.episodes.filter(e=>e.season!==se.id);
+      DB.seasons=DB.seasons.filter(x=>x.id!==se.id);
+      markDirty();renderEdSeasons(body);
+    };
+    body.appendChild(card);
+  });
+  const add=document.createElement('button');add.className='ed-add';add.textContent='+ Add season';
+  add.onclick=()=>{
+    const n=DB.seasons.filter(s=>s.era==='ascension').length+1;
+    DB.seasons.push({id:slug('asc-s'+n),era:'ascension',label:'Season '+n,short:'ASC S'+n,verdict:'',rating:null,review:''});
+    markDirty();renderEdSeasons(body);
+  };
+  body.appendChild(add);
+}
+
+/* ---- Characters tab ---- */
+function renderEdCharacters(body){
+  body.innerHTML='';
+  DB.characters.forEach(ch=>{
+    const card=document.createElement('div');card.className='ed-card';
+    const open=expanded.has(ch.id);
+    const head=document.createElement('div');head.className='ed-row';
+    head.innerHTML=`<button class="ed-name">${open?'▾':'▸'} ${esc(ch.name||'Unnamed')}</button>
+      <button class="ed-del">Delete</button>`;
+    head.querySelector('.ed-name').onclick=()=>{
+      open?expanded.delete(ch.id):expanded.add(ch.id);
+      renderEdCharacters(body);
+    };
+    head.querySelector('.ed-del').onclick=()=>{
+      if(!confirm(`Delete ${ch.name||'this character'}? They'll also be removed from episode cast lists.`))return;
+      DB.characters=DB.characters.filter(c=>c.id!==ch.id);
+      DB.episodes.forEach(e=>{e.cast=(e.cast||[]).filter(id=>id!==ch.id);});
+      expanded.delete(ch.id);
+      markDirty();renderEdCharacters(body);
+    };
+    card.appendChild(head);
+    if(open){
+      const det=document.createElement('div');
+      det.innerHTML=`
+        <div class="ed-row" style="margin-top:12px">
+          <div class="ed-field grow"><label>Name</label><input type="text" value="${esc(ch.name)}" data-cf="name"></div>
+          <div class="ed-field"><label>Glow color</label><input type="color" value="${esc(ch.color||'#ff9ed2')}" data-cf="color"></div>
+        </div>
+        <div class="ed-field"><label>Tags (comma separated)</label><input type="text" value="${esc((ch.tags||[]).join(', '))}" data-cf="tags"></div>
+        <div data-variants></div>`;
+      det.querySelector('[data-cf=name]').oninput=e=>{ch.name=e.target.value;markDirty();};
+      det.querySelector('[data-cf=color]').oninput=e=>{ch.color=e.target.value;markDirty();};
+      det.querySelector('[data-cf=tags]').oninput=e=>{ch.tags=e.target.value.split(',').map(t=>t.trim()).filter(Boolean);markDirty();};
+      const vwrap=det.querySelector('[data-variants]');
+      const renderVariants=()=>{
+        vwrap.innerHTML='';
+        ch.variants.forEach((v,i)=>{
+          const vc=document.createElement('div');vc.className='ed-card sub';
+          vc.innerHTML=`
+            <div class="ed-two">
+              <div class="ed-field"><label>Version label</label><input type="text" value="${esc(v.label)}" data-vf="label"></div>
+              <div class="ed-field"><label>Debut</label><input type="text" value="${esc(v.debut)}" data-vf="debut" placeholder="Season 1 · use the word Ascension for era filtering"></div>
+            </div>
+            <div class="ed-two">
+              <div class="ed-field"><label>Status</label><input type="text" value="${esc(v.status)}" data-vf="status" placeholder="Alive / Deceased / Unknown"></div>
+              <div class="ed-field"><label>Forms (comma separated)</label><input type="text" value="${esc((v.forms||[]).join(', '))}" data-vf="forms"></div>
+            </div>
+            <div class="ed-field"><label>Image URL (GitHub raw link — blank for placeholder)</label><input type="url" value="${esc(v.image)}" data-vf="image"></div>
+            <div class="ed-field"><label>Description</label><textarea data-vf="desc">${esc(v.desc)}</textarea></div>
+            <div class="ed-row">
+              <label class="chk" style="margin:0"><input type="checkbox" ${v.standalone?'checked':''} data-vf="standalone"> Also gets its own roster slot</label>
+              <button class="ed-del" style="margin-left:auto">Remove version</button>
+            </div>`;
+          vc.querySelector('[data-vf=label]').oninput=e=>{v.label=e.target.value;markDirty();};
+          vc.querySelector('[data-vf=debut]').oninput=e=>{v.debut=e.target.value;markDirty();};
+          vc.querySelector('[data-vf=status]').oninput=e=>{v.status=e.target.value;markDirty();};
+          vc.querySelector('[data-vf=forms]').oninput=e=>{v.forms=e.target.value.split(',').map(t=>t.trim()).filter(Boolean);markDirty();};
+          vc.querySelector('[data-vf=image]').oninput=e=>{v.image=e.target.value.trim();markDirty();};
+          vc.querySelector('[data-vf=desc]').oninput=e=>{v.desc=e.target.value;markDirty();};
+          vc.querySelector('[data-vf=standalone]').onchange=e=>{v.standalone=e.target.checked;markDirty();};
+          vc.querySelector('.ed-del').onclick=()=>{
+            if(ch.variants.length===1){alert('A character needs at least one version. Delete the whole character instead.');return;}
+            if(!confirm('Remove this version?'))return;
+            ch.variants.splice(i,1);markDirty();renderVariants();
+          };
+          vwrap.appendChild(vc);
+        });
+        const addV=document.createElement('button');addV.className='ed-add';addV.textContent='+ Add version';
+        addV.onclick=()=>{
+          ch.variants.push({id:ch.id+'-'+uid(),label:'New Version',image:'',status:'Alive',debut:'',desc:'',forms:['Base']});
+          markDirty();renderVariants();
+        };
+        vwrap.appendChild(addV);
+      };
+      renderVariants();
+      card.appendChild(det);
+    }
+    body.appendChild(card);
+  });
+  const add=document.createElement('button');add.className='ed-add';add.textContent='+ Add character';
+  add.onclick=()=>{
+    const name='New Character';
+    const id=slug(name);
+    DB.characters.push({id,name,color:'#ff9ed2',tags:[],variants:[{id:id+'-v1',label:'Season 1',image:'',status:'Alive',debut:'Season 1',desc:'',forms:['Base']}]});
+    expanded.add(id);
+    markDirty();renderEdCharacters(body);
+  };
+  body.appendChild(add);
+}
+
+/* ---- Episodes tab ---- */
+function renderEdEpisodes(body){
+  body.innerHTML='';
+  const bySeason=[...DB.episodes].sort((a,b)=>a.season===b.season?a.num-b.num:(a.season>b.season?1:-1));
+  bySeason.forEach(ep=>{
+    const card=document.createElement('div');card.className='ed-card';
+    const seasonOpts=DB.seasons.map(s=>{
+      const era=DB.eras.find(e=>e.id===s.era);
+      return `<option value="${esc(s.id)}" ${s.id===ep.season?'selected':''}>${esc(era?era.name+' — ':'')}${esc(s.label)}</option>`;
+    }).join('');
+    const castChecks=DB.characters.map(c=>
+      `<label class="chk"><input type="checkbox" value="${esc(c.id)}" ${(ep.cast||[]).includes(c.id)?'checked':''}> ${esc(c.name)}</label>`).join('');
+    card.innerHTML=`
+      <div class="ed-two">
+        <div class="ed-field"><label>Season</label><select data-ef="season">${seasonOpts}</select></div>
+        <div class="ed-field"><label>Episode #</label><input type="number" min="0" value="${ep.num}" data-ef="num"></div>
+      </div>
+      <div class="ed-field"><label>Title</label><input type="text" value="${esc(ep.title)}" data-ef="title"></div>
+      <div class="ed-field"><label>Synopsis / your review</label><textarea data-ef="synopsis">${esc(ep.synopsis)}</textarea></div>
+      <div class="ed-two">
+        <div class="ed-field"><label>Rating /10 (blank to hide)</label><input type="number" min="0" max="10" step="0.5" value="${ep.rating??''}" data-ef="rating"></div>
+      </div>
+      <div class="ed-field"><label>Appearing characters</label><div class="chk-row" data-cast>${castChecks||'<span class="ed-note">Add characters first.</span>'}</div></div>
+      <button class="ed-del">Delete episode</button>`;
+    card.querySelector('[data-ef=season]').onchange=e=>{ep.season=e.target.value;markDirty();};
+    card.querySelector('[data-ef=num]').oninput=e=>{ep.num=parseInt(e.target.value)||0;markDirty();};
+    bind(card.querySelector('[data-ef=title]'),ep,'title');
+    bind(card.querySelector('[data-ef=synopsis]'),ep,'synopsis');
+    card.querySelector('[data-ef=rating]').oninput=e=>{ep.rating=e.target.value===''?null:parseFloat(e.target.value);markDirty();};
+    card.querySelectorAll('[data-cast] input').forEach(cb=>cb.onchange=()=>{
+      ep.cast=[...card.querySelectorAll('[data-cast] input:checked')].map(x=>x.value);
+      markDirty();
+    });
+    card.querySelector('.ed-del').onclick=()=>{
+      if(!confirm(`Delete "${ep.title||'this episode'}"?`))return;
+      DB.episodes=DB.episodes.filter(e=>e.id!==ep.id);
+      markDirty();renderEdEpisodes(body);
+    };
+    body.appendChild(card);
+  });
+  const add=document.createElement('button');add.className='ed-add';add.textContent='+ Add episode';
+  add.onclick=()=>{
+    const season=activeSeason||DB.seasons[0]?.id;
+    const nextNum=Math.max(0,...DB.episodes.filter(e=>e.season===season).map(e=>e.num))+1;
+    DB.episodes.push({id:slug('ep-'+season+'-'+nextNum),season,num:nextNum,title:'',synopsis:'',cast:[],rating:null});
+    markDirty();renderEdEpisodes(body);
+  };
+  body.appendChild(add);
+}
+
+/* ---- export / import / download ---- */
+$('#ed-export').onclick=()=>{
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='dbv-site-data-backup.json';
+  a.click();URL.revokeObjectURL(a.href);
+};
+$('#ed-import').onclick=()=>$('#ed-import-file').click();
+$('#ed-import-file').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const parsed=JSON.parse(r.result);
+      if(!parsed.characters||!parsed.seasons||!parsed.episodes)throw new Error('bad shape');
+      DB=parsed;markDirty();renderAll();renderEditorTab();
+    }catch(err){alert('That file doesn\'t look like a site data backup.');}
+  };
+  r.readAsText(f);e.target.value='';
+});
+
+/* the big one: rebuild this exact file with new data baked in */
+$('#ed-download').onclick=()=>{
+  const json=JSON.stringify(DB,null,2).replace(/</g,'\\u003c');
+  const clone=document.documentElement.cloneNode(true);
+  clone.querySelector('#db-data').textContent='\n'+json+'\n';
+  ['#stars','#roster-grid','#season-nav','#season-content','#saga-timeline','#era-filters','#modal','#ed-body','#ed-draft'].forEach(s=>{
+    const el=clone.querySelector(s); if(el)el.innerHTML='';
+  });
+  const ht=clone.querySelector('#hero-tagline'); if(ht)ht.textContent='';
+  clone.querySelector('#overlay').classList.remove('open');
+  clone.querySelector('#editor-ov').classList.remove('open');
+  const b=clone.querySelector('body'); if(b)b.removeAttribute('style');
+  const out='<!DOCTYPE html>\n'+clone.outerHTML;
+  const blob=new Blob([out],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='index.html';
+  a.click();URL.revokeObjectURL(a.href);
+  try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+  alert('Downloaded as index.html — upload it to your GitHub repo (replacing the old file) and your changes go live.');
+};
+
+renderAll();
+</script>
+</body>
+</html>
