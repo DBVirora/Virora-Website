@@ -387,6 +387,20 @@ footer .glyph{color:var(--pink);font-size:1.1rem;display:block;margin-bottom:8px
 .chk-row{display:flex;gap:12px;flex-wrap:wrap}
 .chk{display:flex;align-items:center;gap:6px;font-size:.84rem;color:#cfcadb}
 .ed-note{color:var(--mute);font-size:.78rem;margin-top:6px}
+
+/* passcode gate + toast */
+.pass-ov{position:fixed;inset:0;z-index:300;display:none;background:rgba(5,5,9,.86);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.pass-ov.open{display:flex}
+.pass-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;width:min(340px,100%);text-align:center;animation:rise .25s ease}
+.pass-card .ed-title{display:block;margin-bottom:14px}
+.pass-card input{width:100%;background:var(--void);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--ink);font-family:var(--body);font-size:1rem;text-align:center;letter-spacing:.2em}
+.pass-card input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,158,210,.12)}
+.pass-card .ed-btn.primary{width:100%;margin-top:12px;padding:11px}
+.pass-err{color:var(--rose);font-size:.78rem;margin-top:10px;min-height:1em}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:400;background:var(--panel-2);border:1px solid var(--pink);color:var(--pink-soft);padding:10px 18px;border-radius:999px;font-size:.84rem;opacity:0;pointer-events:none;transition:.3s;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer .glyph{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ed-del.armed{background:var(--rose);color:#1a0812;border-color:var(--rose)}
 </style>
 </head>
 <body>
@@ -474,6 +488,17 @@ footer .glyph{color:var(--pink);font-size:1.1rem;display:block;margin-bottom:8px
     <div class="ed-body" id="ed-body"></div>
   </div>
 </div>
+
+<!-- passcode gate -->
+<div class="pass-ov" id="pass-ov" role="dialog" aria-modal="true" aria-label="Creator passcode">
+  <div class="pass-card">
+    <span class="ed-title">✦ CREATOR MODE</span>
+    <input type="password" id="pass-input" placeholder="Passcode" autocomplete="off">
+    <button class="ed-btn primary" id="pass-go">Unlock</button>
+    <div class="pass-err" id="pass-err"></div>
+  </div>
+</div>
+<div id="toast" role="status"></div>
 
 <!-- ============================================================
      ██  SERIES DATA — edited by Creator Mode, or by hand  ██
@@ -591,6 +616,19 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Math.random().toString(36).slice(2,8);
 const DRAFT_KEY = 'dbv_site_draft';
+
+/* in-page notifications + confirmations (browser pop-ups are blocked in some environments) */
+let toastTimer=null;
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+function armConfirm(btn,fn,label){
+  if(btn.dataset.armed){ delete btn.dataset.armed; btn.classList.remove('armed'); fn(); return; }
+  btn.dataset.armed='1'; const old=btn.textContent;
+  btn.textContent=label||'Tap again to confirm'; btn.classList.add('armed');
+  setTimeout(()=>{ if(btn.dataset.armed){ delete btn.dataset.armed; btn.textContent=old; btn.classList.remove('armed'); } },2600);
+}
 
 /* ---- star field ---- */
 (function stars(){
@@ -742,7 +780,8 @@ function closeChar(){
 $('#overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeChar();});
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;
-  if($('#editor-ov').classList.contains('open')) closeEditor();
+  if($('#pass-ov').classList.contains('open')) $('#pass-ov').classList.remove('open');
+  else if($('#editor-ov').classList.contains('open')) closeEditor();
   else closeChar();
 });
 
@@ -849,16 +888,31 @@ function slug(name){
 /* open/close */
 function openEditor(){
   if(!edUnlocked){
-    const p=prompt('Creator Mode passcode:');
-    if(p===null) return;
-    if(p!==EDIT_PASS){ alert('Not quite. This panel is for the creator.'); return; }
-    edUnlocked=true;
+    $('#pass-ov').classList.add('open');
+    $('#pass-err').textContent='';
+    $('#pass-input').value='';
+    setTimeout(()=>$('#pass-input').focus(),60);
+    return;
   }
   $('#editor-ov').classList.add('open');
   document.body.style.overflow='hidden';
   checkDraft();
   renderEditorTab();
 }
+function tryUnlock(){
+  if($('#pass-input').value===EDIT_PASS){
+    edUnlocked=true;
+    $('#pass-ov').classList.remove('open');
+    openEditor();
+  }else{
+    $('#pass-err').textContent='Not quite. This panel is for the creator.';
+    $('#pass-input').value='';
+    $('#pass-input').focus();
+  }
+}
+$('#pass-go').onclick=tryUnlock;
+$('#pass-input').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
+$('#pass-ov').addEventListener('click',e=>{if(e.target.id==='pass-ov')$('#pass-ov').classList.remove('open');});
 function closeEditor(){
   $('#editor-ov').classList.remove('open');
   document.body.style.overflow='';
@@ -886,7 +940,7 @@ function checkDraft(){
     <button class="ed-btn" id="draft-discard">Discard</button>
   </div>`;
   $('#draft-restore').onclick=()=>{
-    try{ DB=JSON.parse(draft); renderAll(); renderEditorTab(); }catch(e){alert('Draft was corrupted and couldn\'t be restored.');}
+    try{ DB=JSON.parse(draft); renderAll(); renderEditorTab(); }catch(e){toast('Draft was corrupted and couldn\'t be restored.');}
     bar.innerHTML='';
   };
   $('#draft-discard').onclick=()=>{
@@ -952,12 +1006,13 @@ function renderEdSeasons(body){
       else if(f==='era'){ el.onchange=()=>{se.era=el.value;markDirty();}; }
       else bind(el,se,f);
     });
-    card.querySelector('.ed-del').onclick=()=>{
+    card.querySelector('.ed-del').onclick=function(){
       const epCount=DB.episodes.filter(e=>e.season===se.id).length;
-      if(!confirm(`Delete "${se.label}"?${epCount?` Its ${epCount} episode(s) will be deleted too.`:''}`))return;
-      DB.episodes=DB.episodes.filter(e=>e.season!==se.id);
-      DB.seasons=DB.seasons.filter(x=>x.id!==se.id);
-      markDirty();renderEdSeasons(body);
+      armConfirm(this,()=>{
+        DB.episodes=DB.episodes.filter(e=>e.season!==se.id);
+        DB.seasons=DB.seasons.filter(x=>x.id!==se.id);
+        markDirty();renderEdSeasons(body);
+      },epCount?`Tap again — deletes ${epCount} episode(s) too`:'Tap again to delete');
     };
     body.appendChild(card);
   });
@@ -983,12 +1038,13 @@ function renderEdCharacters(body){
       open?expanded.delete(ch.id):expanded.add(ch.id);
       renderEdCharacters(body);
     };
-    head.querySelector('.ed-del').onclick=()=>{
-      if(!confirm(`Delete ${ch.name||'this character'}? They'll also be removed from episode cast lists.`))return;
-      DB.characters=DB.characters.filter(c=>c.id!==ch.id);
-      DB.episodes.forEach(e=>{e.cast=(e.cast||[]).filter(id=>id!==ch.id);});
-      expanded.delete(ch.id);
-      markDirty();renderEdCharacters(body);
+    head.querySelector('.ed-del').onclick=function(){
+      armConfirm(this,()=>{
+        DB.characters=DB.characters.filter(c=>c.id!==ch.id);
+        DB.episodes.forEach(e=>{e.cast=(e.cast||[]).filter(id=>id!==ch.id);});
+        expanded.delete(ch.id);
+        markDirty();renderEdCharacters(body);
+      },'Tap again to delete');
     };
     card.appendChild(head);
     if(open){
@@ -1030,10 +1086,9 @@ function renderEdCharacters(body){
           vc.querySelector('[data-vf=image]').oninput=e=>{v.image=e.target.value.trim();markDirty();};
           vc.querySelector('[data-vf=desc]').oninput=e=>{v.desc=e.target.value;markDirty();};
           vc.querySelector('[data-vf=standalone]').onchange=e=>{v.standalone=e.target.checked;markDirty();};
-          vc.querySelector('.ed-del').onclick=()=>{
-            if(ch.variants.length===1){alert('A character needs at least one version. Delete the whole character instead.');return;}
-            if(!confirm('Remove this version?'))return;
-            ch.variants.splice(i,1);markDirty();renderVariants();
+          vc.querySelector('.ed-del').onclick=function(){
+            if(ch.variants.length===1){toast('A character needs at least one version — delete the whole character instead.');return;}
+            armConfirm(this,()=>{ch.variants.splice(i,1);markDirty();renderVariants();},'Tap again to remove');
           };
           vwrap.appendChild(vc);
         });
@@ -1093,10 +1148,11 @@ function renderEdEpisodes(body){
       ep.cast=[...card.querySelectorAll('[data-cast] input:checked')].map(x=>x.value);
       markDirty();
     });
-    card.querySelector('.ed-del').onclick=()=>{
-      if(!confirm(`Delete "${ep.title||'this episode'}"?`))return;
-      DB.episodes=DB.episodes.filter(e=>e.id!==ep.id);
-      markDirty();renderEdEpisodes(body);
+    card.querySelector('.ed-del').onclick=function(){
+      armConfirm(this,()=>{
+        DB.episodes=DB.episodes.filter(e=>e.id!==ep.id);
+        markDirty();renderEdEpisodes(body);
+      },'Tap again to delete');
     };
     body.appendChild(card);
   });
@@ -1126,7 +1182,7 @@ $('#ed-import-file').addEventListener('change',e=>{
       const parsed=JSON.parse(r.result);
       if(!parsed.characters||!parsed.seasons||!parsed.episodes)throw new Error('bad shape');
       DB=parsed;markDirty();renderAll();renderEditorTab();
-    }catch(err){alert('That file doesn\'t look like a site data backup.');}
+    }catch(err){toast('That file doesn\'t look like a site data backup.');}
   };
   r.readAsText(f);e.target.value='';
 });
@@ -1149,7 +1205,7 @@ $('#ed-download').onclick=()=>{
   a.href=URL.createObjectURL(blob);a.download='index.html';
   a.click();URL.revokeObjectURL(a.href);
   try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
-  alert('Downloaded as index.html — upload it to your GitHub repo (replacing the old file) and your changes go live.');
+  toast('Downloaded index.html — upload it to your GitHub repo (replacing the old file) and your changes go live.');
 };
 
 renderAll();
